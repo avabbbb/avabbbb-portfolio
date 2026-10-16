@@ -1,0 +1,13 @@
+# Cloudflare Pages 配置 —— 部署时由 wrangler-action 读取并应用
+# 文档: https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+
+name = "avabbbb"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-08-12"
+
+# 绑定 R2 存储桶(已存在,内含 videos/aigc-annual-1080p.mp4)
+[[r2_buckets]]
+binding = "LOCKED_VIDEOS"
+bucket_name = "lkf-assets"
+
+# 解锁与签名凭据只能通过 Pages Secret 注入，不在仓库中提供默认值。

@@ -1,0 +1,28 @@
+{
+  "purpose": "Author-supplied promotional films; separate from product-operation evidence.",
+  "assets": {
+    "flovart-promo.mp4": {
+      "source": "Author-supplied Flovart/Iris_Promo_60s_v4.mp4",
+      "treatment": "1280px H.264/AAC web encode with faststart",
+      "note": "Iris names the Flovart plugin edition; Flovart names the canvas edition, as specified by the author."
+    },
+    "offeru-promo.mp4": {
+      "source": "Author-supplied OfferU/OfferU_launch_60s_v1.mp4",
+      "treatment": "1280px H.264/AAC web encode with faststart"
+    },
+    "flovart-intro.mp4": {
+      "source": "Author-supplied Flovart/Iris_Vision_3min_v5.mp4",
+      "treatment": "1280px H.264/AAC web encode with faststart",
+      "durationSeconds": 180
+    },
+    "offeru-intro.mp4": {
+      "source": "Author-supplied OfferU/OfferU_walkthrough_EN_v1.mp4",
+      "treatment": "1280px H.264/AAC web encode with faststart",
+      "durationSeconds": 160
+    },
+    "flovart-intro.webp": { "source": "flovart-intro.mp4", "timestampSeconds": 12 },
+    "offeru-intro.webp": { "source": "offeru-intro.mp4", "timestampSeconds": 12 },
+    "flovart-promo.webp": { "source": "flovart-promo.mp4", "timestampSeconds": 12 },
+    "offeru-promo.webp": { "source": "offeru-promo.mp4", "timestampSeconds": 12 }
+  }
+}

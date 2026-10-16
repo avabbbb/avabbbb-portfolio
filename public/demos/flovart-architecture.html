@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FLOVART / ARCHITECTURE</title>
+<style>
+:root{--bg:#F5F0E6;--ink:#1d1c1a;--red:#df3f35;--olive:#747a52;--card:#FBF7EC;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:"Courier New",ui-monospace,Menlo,Consolas,"Microsoft YaHei","PingFang SC",monospace;padding:12px;font-size:13px;line-height:1.5}
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.bar .sq{width:9px;height:9px;background:var(--red);border:2px solid var(--ink);flex:none}
+.bar .tt{font-size:11px;letter-spacing:.16em;font-weight:700}
+.bar .sp{flex:1}
+button{font:inherit;font-size:12px;border:2px solid var(--ink);background:var(--card);padding:5px 12px;cursor:pointer;font-weight:700}
+button:hover:not(:disabled){background:var(--ink);color:var(--bg)}
+button:disabled{opacity:.4;cursor:default}
+.btn-run{background:var(--red);color:#fff}
+.btn-run:hover:not(:disabled){background:var(--ink)}
+.grid{display:flex;gap:14px;align-items:stretch}
+.stack{position:relative;flex:1.25;min-width:0}
+.packet{position:absolute;left:50%;top:-12px;width:14px;height:14px;background:var(--red);border:2px solid var(--ink);transform:translate(-50%,-50%);display:none;z-index:5;transition:top .5s cubic-bezier(.6,.05,.3,1),opacity .3s}
+.layer{border:2px solid var(--ink);background:var(--card);padding:10px 12px;cursor:pointer;transition:background .18s,color .18s;position:relative}
+.layer:hover{border-color:var(--red)}
+.layer.sel{background:var(--ink);color:var(--bg)}
+.layer.sel .en{color:var(--bg)}
+.layer.flash{background:var(--red);color:#fff}
+.layer.flash .en{color:#fff}
+.layer .name{font-weight:700;font-size:14px}
+.layer .en{font-size:10px;letter-spacing:.12em;color:var(--olive);margin-top:1px}
+.layer .desc{font-size:12px;margin-top:4px;opacity:.85}
+.arrow{text-align:center;font-size:12px;padding:1px 0;color:var(--ink);user-select:none}
+.storage{border:2px dashed var(--ink);background:transparent;padding:8px 12px;cursor:pointer}
+.storage:hover{border-color:var(--red);border-style:solid}
+.storage.sel{background:var(--ink);color:var(--bg);border-style:solid}
+.storage.sel .en{color:var(--bg)}
+.storage.flash{background:var(--olive);color:#fff;border-style:solid}
+.storage.flash .en{color:#fff}
+.card{flex:1;min-width:0;border:2px solid var(--ink);background:var(--card);box-shadow:5px 5px 0 var(--ink);padding:14px;align-self:flex-start;position:sticky;top:12px}
+.card h2{font-size:16px;margin-bottom:2px}
+.card .cen{font-size:10px;letter-spacing:.14em;color:var(--olive);margin-bottom:10px}
+.card ul{list-style:none}
+.card li{padding:6px 0 6px 16px;border-top:1px dashed var(--ink);position:relative;font-size:12px}
+.card li::before{content:"▸";position:absolute;left:0;color:var(--red)}
+.card .tag{display:inline-block;border:1px solid var(--ink);padding:1px 6px;font-size:10px;letter-spacing:.1em;margin:2px 4px 0 0;background:var(--bg)}
+.hint{font-size:10px;color:var(--olive);letter-spacing:.08em;margin-top:8px}
+@media (max-width:720px){.grid{flex-direction:column}.card{position:static}}
+@media (prefers-reduced-motion:reduce){.packet{transition:none}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <span class="sq"></span><span class="tt">FLOVART / ARCHITECTURE</span>
+  <span class="sp"></span>
+  <button class="btn-run" id="run">▶ 运行 Brief</button>
+</header>
+<div class="grid">
+  <section class="stack" id="stack">
+    <div class="packet" id="packet" title="brief"></div>
+  </section>
+  <aside class="card" id="card">
+    <h2 id="cname">—</h2>
+    <div class="cen" id="cen"></div>
+    <ul id="clist"></ul>
+    <div id="ctags"></div>
+    <div class="hint">点击 / 悬停左侧层级查看职责 · RUN 演示一份 Brief 自上而下流经全栈</div>
+  </aside>
+</div>
+<script>
+(function(){
+"use strict";
+var RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var DATA=[
+ {name:"Flovart Agent",en:"SOLE COLLABORATION ENTRY",
+  desc:"理解 Brief → 选择 Skill → 监督执行",
+  pts:["解析用户 Brief，拆解为可执行任务","从 Skill 注册表中挑选制作方法","监督执行、汇总产物与状态","用户只与 Agent 对话，不触达下层"],
+  tags:["对话入口","任务拆解","执行监督"]},
+ {name:"Production Skill Registry",en:"LOADABLE RECIPES",
+  desc:"可加载的制作方法：风格 / 镜头语言 / 步骤 / 检查点 / 验收标准",
+  pts:["每个 Skill 定义视觉风格与镜头语言","步骤化流程，每步带检查点","验收标准内置，产出可被自检","文件化注册，可版本化复用"],
+  tags:["风格","镜头语言","检查点","验收"]},
+ {name:"Flovart Runtime / CLI",en:"DETERMINISTIC EXECUTION",
+  desc:"确定性执行层：注册表能力 · 任务持久化 · JSON 状态轮询 / 重试 / 续跑",
+  pts:["读取注册表能力并调度 Adapter","任务状态持久化为 JSON 落盘","轮询生成状态：retry / resume","CLI 可脚本化，失败断点续跑"],
+  tags:["持久化","轮询","重试","续跑"]},
+ {name:"Provider Adapter",en:"MODEL ROUTING · BYOK",
+  desc:"模型路由 + 凭据注入（自带 Key）",
+  pts:["按任务类型路由到不同 Provider","运行时注入凭据，代码不含 Key","对上屏蔽各家 API 差异","换 Provider 只改适配层"],
+  tags:["路由","凭据注入","BYOK"]},
+ {name:"本地存储 Local Storage",en:"PROJECTS · ASSETS · RECORDS",
+  desc:"项目 / 素材 / 生成记录 · API Key 加密",
+  pts:["项目结构、素材文件、生成历史","API Key 加密存储，不落明文","Runtime 的唯一读写数据源"],
+  tags:["素材","生成记录","Key 加密"]}
+];
+var stack=document.getElementById("stack"),packet=document.getElementById("packet");
+var els=[],i,el;
+for(i=0;i<DATA.length;i++){
+  el=document.createElement("div");
+  var isStore=(i===DATA.length-1);
+  el.className=isStore?"storage":"layer";
+  el.dataset.i=i;
+  el.innerHTML='<div class="name">'+DATA[i].name+'</div><div class="en">'+DATA[i].en+'</div><div class="desc">'+DATA[i].desc+"</div>";
+  stack.appendChild(el);els.push(el);
+  if(i<DATA.length-1){var a=document.createElement("div");a.className="arrow";a.textContent="▼";stack.appendChild(a);}
+}
+function select(idx){
+  els.forEach(function(e){e.classList.toggle("sel",+e.dataset.i===idx);});
+  var d=DATA[idx];
+  document.getElementById("cname").textContent=d.name;
+  document.getElementById("cen").textContent=d.en;
+  document.getElementById("clist").innerHTML=d.pts.map(function(p){return "<li>"+p+"</li>";}).join("");
+  document.getElementById("ctags").innerHTML=d.tags.map(function(t){return '<span class="tag">'+t+"</span>";}).join("");
+}
+els.forEach(function(e){
+  e.addEventListener("click",function(){select(+e.dataset.i);});
+  e.addEventListener("mouseenter",function(){select(+e.dataset.i);});
+});
+select(0);
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+var running=false;
+document.getElementById("run").addEventListener("click",async function(){
+  if(running)return;running=true;this.disabled=true;this.textContent="… 运行中";
+  function flash(e,c){e.classList.add("flash");setTimeout(function(){e.classList.remove("flash");},450);}
+  if(RM){els.forEach(function(e,k){setTimeout(function(){flash(e);},k*90);});await sleep(els.length*90+500);}
+  else{
+    packet.style.display="block";packet.style.opacity="1";packet.style.top="-12px";
+    await sleep(60);
+    for(var k=0;k<els.length;k++){
+      var e=els[k];
+      packet.style.top=(e.offsetTop+e.offsetHeight/2)+"px";
+      await sleep(520);flash(e);await sleep(140);
+    }
+    packet.style.opacity="0";await sleep(320);
+    packet.style.display="none";packet.style.top="-12px";packet.style.opacity="1";
+  }
+  running=false;this.disabled=false;this.textContent="▶ 运行 Brief";
+});
+})();
+</script>
+</body>
+</html>

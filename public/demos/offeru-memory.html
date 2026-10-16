@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OFFERU / MEMORY LAYERS</title>
+<style>
+:root{--bg:#F5F0E6;--ink:#1d1c1a;--red:#df3f35;--olive:#747a52;--card:#FBF7EC;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:"Courier New",ui-monospace,Menlo,Consolas,"Microsoft YaHei","PingFang SC",monospace;padding:12px;font-size:13px;line-height:1.5}
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.bar .sq{width:9px;height:9px;background:var(--red);border:2px solid var(--ink);flex:none}
+.bar .tt{font-size:11px;letter-spacing:.16em;font-weight:700}
+.bar .sp{flex:1}
+.tgl{display:flex;border:2px solid var(--ink)}
+.tgl button{border:none;border-right:2px solid var(--ink);padding:5px 12px;background:var(--card)}
+.tgl button:last-child{border-right:none}
+.tgl button.on{background:var(--ink);color:var(--bg)}
+.grid{display:flex;gap:14px;align-items:flex-start}
+.stack{flex:1.15;min-width:0}
+.mem{border:2px solid var(--ink);background:var(--card);padding:9px 12px;margin-bottom:8px;cursor:pointer;transition:background .15s,color .15s;position:relative}
+.mem:hover{border-color:var(--red)}
+.mem.sel{background:var(--ink);color:var(--bg)}
+.mem.sel .en,.mem.sel .pol{color:var(--bg)}
+.mem .name{font-weight:700;font-size:14px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.mem .en{font-size:10px;letter-spacing:.12em;color:var(--olive);font-weight:400}
+.mem .pol{font-size:11px;margin-top:3px;color:var(--ink);opacity:.85}
+.mem .pol b{color:var(--red)}
+.mem.sel .pol b{color:#fff}
+.card{flex:1;min-width:0;border:2px solid var(--ink);background:var(--card);box-shadow:5px 5px 0 var(--ink);padding:14px}
+.card h2{font-size:16px}
+.card .cen{font-size:10px;letter-spacing:.14em;color:var(--olive);margin-bottom:8px}
+.lbl{font-size:10px;letter-spacing:.12em;color:var(--olive);margin:8px 0 4px;border-top:2px solid var(--ink);padding-top:8px}
+.fields{list-style:none}
+.fields li{padding:4px 0 4px 16px;border-top:1px dashed var(--ink);position:relative;font-size:12px}
+.fields li::before{content:"·";position:absolute;left:2px;color:var(--red);font-weight:700}
+.fields li code{font-size:11px;background:var(--bg);border:1px solid var(--ink);padding:0 4px}
+.rule{border:2px solid var(--ink);padding:8px 10px;font-size:12px;margin-top:6px;background:var(--bg)}
+.rule b{color:var(--red)}
+.flow{border:2px solid var(--ink);background:var(--card);padding:10px;margin-top:12px}
+.flow .ft{font-size:10px;letter-spacing:.12em;color:var(--olive);margin-bottom:8px}
+.frow{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:6px;flex-wrap:wrap}
+.frow .box{border:2px solid var(--ink);padding:4px 8px;background:var(--bg);font-weight:700}
+.frow .ar{letter-spacing:-.1em}
+.path-ok .box:last-child{border-color:var(--olive);color:var(--olive)}
+.path-bad .box{opacity:.55}
+.verdict{font-size:12px;font-weight:700;margin-top:4px}
+.verdict.ok{color:var(--olive)}
+.verdict.bad{color:var(--red)}
+@media (max-width:720px){.grid{flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <span class="sq"></span><span class="tt">OFFERU / MEMORY LAYERS</span>
+  <span class="sp"></span>
+  <span style="font-size:10px;letter-spacing:.1em">写入策略 WRITE POLICY:</span>
+  <div class="tgl">
+    <button id="tBad">Agent 直接写入</button>
+    <button id="tGood" class="on">提案 → 确认</button>
+  </div>
+</header>
+<div class="grid">
+  <section class="stack" id="stack"></section>
+  <aside class="card">
+    <h2 id="cname">—</h2>
+    <div class="cen" id="cen"></div>
+    <div class="lbl">SCHEMA 字段</div>
+    <ul class="fields" id="cfields"></ul>
+    <div class="lbl">写入规则</div>
+    <div class="rule" id="crule"></div>
+    <div class="flow">
+      <div class="ft" id="flowtitle">写入路径 — 提案 → 确认</div>
+      <div class="frow" id="frow">
+        <span class="box">Agent</span><span class="ar" id="ar1">──▶</span>
+        <span class="box" id="b2">提案 Proposal</span><span class="ar" id="ar2">──▶</span>
+        <span class="box" id="b3">人工确认</span><span class="ar" id="ar3">──▶</span>
+        <span class="box" id="b4">Memory</span>
+      </div>
+      <div class="verdict ok" id="verdict">✓ 事实经审核后才落库，记忆始终可信</div>
+    </div>
+  </aside>
+</div>
+<script>
+(function(){
+"use strict";
+var DATA=[
+ {name:"职业档案",en:"CAREER PROFILE",pol:"仅已确认事实 — <b>审核后才落库</b>",
+  fields:["<code>facts[]</code> 教育 / 经历 / 技能（已确认）","<code>preferences</code> 城市 / 薪资 / 行业偏好","<code>confirmed_by</code> 确认人 + 时间戳","<code>source</code> 简历 / 对话 / 证明材料"],
+  rule:"任何字段写入都必须携带来源；Agent 产出仅是<b>提案</b>，用户确认后才成为 fact。"},
+ {name:"岗位机会",en:"JOB OPPORTUNITIES",pol:"JD 核对 + 公司研究",
+  fields:["<code>jd_text</code> 原始 JD 文本","<code>jd_checklist[]</code> 硬性要求核对结果","<code>company_research</code> 公司 / 团队 / 业务","<code>fit_score</code> 与职业档案的匹配度"],
+  rule:"入库前强制 <b>JD 核对清单</b>：每条硬性要求标注 满足/存疑/不满足，存疑项禁止标记为匹配。"},
+ {name:"材料定制",en:"TAILORED MATERIALS",pol:"岗位定制提案，基于已确认事实",
+  fields:["<code>base_resume_id</code> 引用的档案版本","<code>diff[]</code> 每条改动 + 理由","<code>claims[]</code> 所有主张可回溯到 fact","<code>status</code> draft / proposed / confirmed"],
+  rule:"每条改写主张必须<b>回溯到已确认 fact</b>；不允许凭空生成经历，无法溯源的内容直接丢弃。"},
+ {name:"投递进展",en:"APPLICATION TRACKING",pol:"阶段变化 / 邮件信号 / 后续行动",
+  fields:["<code>stage</code> 已投 / 筛选 / 面试 / offer","<code>signals[]</code> 邮件 / 系统状态变化","<code>next_action</code> 建议的后续动作","<code>timeline[]</code> 全部状态迁移记录"],
+  rule:"阶段迁移由<b>外部信号</b>触发（邮件 / 状态页），Agent 只做归并，不臆测进展。"},
+ {name:"面试观察",en:"INTERVIEW OBSERVATIONS",pol:"问题 / 回答反馈 / 学习记录",
+  fields:["<code>questions[]</code> 被问到的问题","<code>feedback</code> 回答质量自评 / 他评","<code>lessons[]</code> 沉淀的改进点","<code>replay_to</code> 回写到哪层记忆"],
+  rule:"观察记录<b>只读引用</b>上层事实；学到的内容以提案形式回写职业档案，同样走确认。"}
+];
+var stack=document.getElementById("stack");
+var els=DATA.map(function(d,i){
+  var e=document.createElement("div");e.className="mem";e.dataset.i=i;
+  e.innerHTML='<div class="name">'+d.name+' <span class="en">'+d.en+'</span></div><div class="pol">'+d.pol+"</div>";
+  e.addEventListener("click",function(){select(i);});
+  e.addEventListener("mouseenter",function(){select(i);});
+  stack.appendChild(e);return e;
+});
+function select(i){
+  els.forEach(function(e,k){e.classList.toggle("sel",k===i);});
+  var d=DATA[i];
+  document.getElementById("cname").textContent=d.name;
+  document.getElementById("cen").textContent=d.en;
+  document.getElementById("cfields").innerHTML=d.fields.map(function(f){return "<li>"+f+"</li>";}).join("");
+  document.getElementById("crule").innerHTML=d.rule;
+}
+select(0);
+var tBad=document.getElementById("tBad"),tGood=document.getElementById("tGood");
+var frow=document.getElementById("frow"),verdict=document.getElementById("verdict"),ft=document.getElementById("flowtitle");
+function mode(direct){
+  tBad.classList.toggle("on",direct);tGood.classList.toggle("on",!direct);
+  if(direct){
+    ft.textContent="写入路径 — Agent 直接写入";
+    frow.className="frow path-bad";
+    frow.innerHTML='<span class="box">Agent</span><span class="ar" style="color:var(--red)">──✕──▶</span><span class="box" style="border-color:var(--red);color:var(--red)">Memory</span>';
+    verdict.className="verdict bad";
+    verdict.textContent="✕ 直接写入被阻断：未审核内容会污染事实层，下游材料全部失真";
+  }else{
+    ft.textContent="写入路径 — 提案 → 确认";
+    frow.className="frow path-ok";
+    frow.innerHTML='<span class="box">Agent</span><span class="ar">──▶</span><span class="box">提案 Proposal</span><span class="ar">──▶</span><span class="box">人工确认</span><span class="ar">──▶</span><span class="box">Memory</span>';
+    verdict.className="verdict ok";
+    verdict.textContent="✓ 事实经审核后才落库，记忆始终可信";
+  }
+}
+tBad.addEventListener("click",function(){mode(true);});
+tGood.addEventListener("click",function(){mode(false);});
+})();
+</script>
+</body>
+</html>

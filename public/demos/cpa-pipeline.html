@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CPA / ERROR PIPELINE</title>
+<style>
+:root{--bg:#F5F0E6;--ink:#1d1c1a;--red:#df3f35;--olive:#747a52;--card:#FBF7EC;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:"Courier New",ui-monospace,Menlo,Consolas,"Microsoft YaHei","PingFang SC",monospace;padding:12px;font-size:13px;line-height:1.5}
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.bar .sq{width:9px;height:9px;background:var(--red);border:2px solid var(--ink);flex:none}
+.bar .tt{font-size:11px;letter-spacing:.16em;font-weight:700}
+.bar .sp{flex:1}
+.tgl{display:flex;border:2px solid var(--ink)}
+.tgl button{border:none;border-right:2px solid var(--ink);padding:5px 12px;background:var(--card)}
+.tgl button:last-child{border-right:none}
+.tgl button.on{background:var(--ink);color:var(--bg)}
+button{font:inherit;font-size:12px;border:2px solid var(--ink);background:var(--card);padding:5px 12px;cursor:pointer;font-weight:700}
+button:hover:not(:disabled){background:var(--ink);color:var(--bg)}
+button:disabled{opacity:.4;cursor:default}
+.btn-run{background:var(--red);color:#fff}
+.grid{display:flex;gap:14px;align-items:flex-start}
+.pipe{flex:1.5;min-width:0;border:2px solid var(--ink);background:var(--card);padding:14px;position:relative}
+.prow{display:flex;align-items:stretch;gap:0;margin-bottom:10px}
+.pnode{flex:1;min-width:0;border:2px solid var(--ink);background:var(--bg);padding:8px 6px;text-align:center;position:relative;transition:background .15s,color .15s}
+.pnode .n{font-weight:700;font-size:12px}
+.pnode .en{font-size:9px;letter-spacing:.08em;color:var(--olive)}
+.pnode .sub{font-size:10px;margin-top:3px;opacity:.8}
+.pnode.hit{background:var(--ink);color:var(--bg)}
+.pnode.hit .en{color:var(--bg)}
+.pnode.bad{background:var(--red);color:#fff}
+.pnode.bad .en{color:#fff}
+.pnode.ok{background:var(--olive);color:#fff}
+.pnode.ok .en{color:#fff}
+.pnode.cool{border-color:var(--red);color:var(--red)}
+.link{flex:none;width:22px;align-self:center;text-align:center;color:var(--ink);font-weight:700}
+.mapline{border-top:2px dashed var(--ink);padding:8px 4px;font-size:12px;margin-bottom:8px}
+.mapline code{background:var(--bg);border:1px solid var(--ink);padding:0 5px;font-size:11px}
+.mapline .to{font-weight:700}
+.mapline .to.c403{color:var(--red)}
+.mapline .to.c429{color:var(--olive)}
+.statusline{font-size:12px;border:2px solid var(--ink);padding:7px 10px;background:var(--bg);min-height:34px}
+.statusline .badge{display:inline-block;padding:1px 8px;font-weight:700;border:2px solid var(--ink);margin-right:6px}
+.b-red{background:var(--red);color:#fff;border-color:var(--ink)}
+.b-olive{background:var(--olive);color:#fff;border-color:var(--ink)}
+.b-ink{background:var(--ink);color:var(--bg)}
+.cd{display:none;margin-top:8px;border:2px dashed var(--red);padding:6px 10px;font-size:11px;color:var(--red);font-weight:700}
+.cd.on{display:block}
+.shortcut{position:absolute;left:12%;right:12%;top:calc(100% - 6px);height:34px;border-bottom:2px dashed var(--red);border-left:2px dashed var(--red);border-right:2px dashed var(--red);display:none;pointer-events:none}
+.shortcut.on{display:block}
+.shortcut .lab{position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);background:var(--bg);border:1px solid var(--red);color:var(--red);font-size:10px;padding:0 6px;white-space:nowrap}
+.pkt{position:absolute;width:13px;height:13px;background:var(--red);border:2px solid var(--ink);transform:translate(-50%,-50%);display:none;z-index:5;transition:left .5s cubic-bezier(.6,.05,.3,1),top .5s cubic-bezier(.6,.05,.3,1),opacity .3s}
+.right{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.logbox{border:2px solid var(--ink);background:var(--card);box-shadow:5px 5px 0 var(--ink);padding:10px;height:280px;display:flex;flex-direction:column}
+.logbox .lt{font-size:10px;letter-spacing:.12em;color:var(--olive);margin-bottom:6px}
+.log{flex:1;overflow-y:auto;font-size:11px;line-height:1.6}
+.log .t{color:var(--olive);margin-right:6px}
+.log .e-ok{color:var(--olive)}
+.log .e-bad{color:var(--red)}
+.log .e-dim{opacity:.6}
+table.mtx{width:100%;border-collapse:collapse;border:2px solid var(--ink);font-size:11px;background:var(--card)}
+.mtx th,.mtx td{border:1px solid var(--ink);padding:5px 6px;text-align:left}
+.mtx th{background:var(--ink);color:var(--bg);font-size:10px;letter-spacing:.08em}
+.mtx td.c403{color:var(--red);font-weight:700}
+.mtx td.c429{color:var(--olive);font-weight:700}
+.mtx td.c200{font-weight:700}
+.mtitle{font-size:10px;letter-spacing:.12em;color:var(--olive);margin-bottom:4px}
+@media (max-width:820px){.grid{flex-direction:column}.prow{flex-wrap:wrap}.pnode{min-width:44%;margin-bottom:6px}.link{display:none}}
+@media (prefers-reduced-motion:reduce){.pkt{transition:none}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <span class="sq"></span><span class="tt">CPA / ERROR PIPELINE · permission_denied semantics</span>
+  <span class="sp"></span>
+  <div class="tgl">
+    <button id="mBefore" class="on">修复前</button>
+    <button id="mAfter">修复后</button>
+  </div>
+  <button class="btn-run" id="send">▶ 发送请求</button>
+  <button id="sendReal">▶ 真·权限错误</button>
+</header>
+<div class="grid">
+  <section class="pipe" id="pipe">
+    <div class="prow" id="prow">
+      <div class="pnode" id="n0"><div class="n">Client</div><div class="en">请求方</div><div class="sub">chat 请求</div></div>
+      <div class="link">▶</div>
+      <div class="pnode" id="n1"><div class="n">Cooldown Mgr</div><div class="en">冷却管理</div><div class="sub" id="cdsub">空闲</div></div>
+      <div class="link">▶</div>
+      <div class="pnode" id="n2"><div class="n">Normalizer</div><div class="en">CPA 错误归一化</div><div class="sub" id="mapsub">permission_denied → 403</div></div>
+      <div class="link">▶</div>
+      <div class="pnode" id="n3"><div class="n">Devin Upstream</div><div class="en">上游</div><div class="sub">返回错误语义</div></div>
+    </div>
+    <div class="mapline" id="mapline">
+      当前映射：<code>permission_denied + "high demand"</code> <span class="to c403" id="mapto">→ 403 AUTH</span>
+    </div>
+    <div class="statusline" id="status"><span class="badge b-ink">IDLE</span>等待请求…</div>
+    <div class="cd" id="cdbar">⏱ 冷却中 COOLDOWN 30min — 后续请求本地短路，不再触达上游</div>
+    <div class="shortcut" id="shortcut"><span class="lab">本地短路 LOCAL SHORT-CIRCUIT · ~9ms 返回</span></div>
+    <div class="pkt" id="pkt"></div>
+  </section>
+  <div class="right">
+    <div class="logbox">
+      <div class="lt">HOP LOG — 逐跳记录</div>
+      <div class="log" id="log"></div>
+    </div>
+    <div>
+      <div class="mtitle">DECISION TABLE — error kind × mode</div>
+      <table class="mtx">
+        <tr><th>上游返回</th><th>修复前</th><th>修复后</th></tr>
+        <tr><td><code>permission_denied + "high demand"</code></td><td class="c403">403 → 冷却 30min</td><td class="c429">429 → 重试/放行</td></tr>
+        <tr><td><code>permission_denied</code>（真实）</td><td class="c403">403 → 冷却</td><td class="c403">403 → 冷却 ✓</td></tr>
+        <tr><td><code>200</code> 正常</td><td class="c200">200</td><td class="c200">200</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+"use strict";
+var RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var mode="before"; // before | after
+var cooldown=false;
+var pipe=document.getElementById("pipe"),pkt=document.getElementById("pkt"),log=document.getElementById("log");
+var nodes=[document.getElementById("n0"),document.getElementById("n1"),document.getElementById("n2"),document.getElementById("n3")];
+var t0=Date.now();
+function now(){var ms=Date.now()-t0;return (ms/1000).toFixed(3)+"s";}
+function say(msg,cls){
+  var d=document.createElement("div");if(cls)d.className=cls;
+  d.innerHTML='<span class="t">'+now()+"</span>"+msg;
+  log.appendChild(d);log.scrollTop=log.scrollHeight;
+}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function center(el){
+  var r=pipe.getBoundingClientRect(),b=el.getBoundingClientRect();
+  return {x:b.left-r.left+b.width/2,y:b.top-r.top+b.height/2};
+}
+function moveTo(el){var c=center(el);pkt.style.left=c.x+"px";pkt.style.top=c.y+"px";}
+function flash(el,cls){el.classList.add(cls||"hit");setTimeout(function(){el.classList.remove(cls||"hit");},450);}
+function status(html){document.getElementById("status").innerHTML=html;}
+var send=document.getElementById("send"),sendReal=document.getElementById("sendReal");
+var mB=document.getElementById("mBefore"),mA=document.getElementById("mAfter");
+var cdsub=document.getElementById("cdsub"),mapsub=document.getElementById("mapsub"),mapto=document.getElementById("mapto"),cdbar=document.getElementById("cdbar"),shortcut=document.getElementById("shortcut");
+function setMode(m){
+  mode=m;mB.classList.toggle("on",m==="before");mA.classList.toggle("on",m==="after");
+  if(m==="before"){
+    mapsub.textContent="permission_denied → 403";
+    mapto.textContent="→ 403 AUTH";mapto.className="to c403";
+    say("—— 切换至 修复前：所有 permission_denied 一律映射 403","e-dim");
+  }else{
+    mapsub.textContent='"high demand" → 429 · 其余 → 403';
+    mapto.textContent='→ 429 TRANSIENT（"high demand" 时）';mapto.className="to c429";
+    say("—— 切换至 修复后：按错误语义分流 429 / 403","e-dim");
+  }
+  // 切换模式 = 演示新部署行为，清空冷却状态
+  cooldown=false;cdsub.textContent="空闲";cdbar.classList.remove("on");
+  nodes[1].classList.remove("cool");shortcut.classList.remove("on");
+  if(m==="before"){status('<span class="badge b-ink">IDLE</span>修复前：高压错误将被误当鉴权失败');}
+  else{status('<span class="badge b-ink">IDLE</span>修复后：冷却已重置，瞬时错误不再误伤');}
+}
+mB.addEventListener("click",function(){setMode("before");});
+mA.addEventListener("click",function(){setMode("after");});
+var busy=false;
+async function fire(realDenied){
+  if(busy)return;busy=true;send.disabled=true;sendReal.disabled=true;
+  pkt.style.display="block";pkt.style.opacity="1";moveTo(nodes[0]);
+  say("client → 发出请求 "+(realDenied?"（真实 permission_denied 场景）":'（上游返回 permission_denied + "high demand"）'));
+  await sleep(RM?60:500);
+  // hop: cooldown manager
+  moveTo(nodes[1]);flash(nodes[1]);await sleep(RM?60:480);
+  if(cooldown){
+    // short-circuit locally
+    shortcut.classList.add("on");
+    say("cooldown-mgr → <b class='e-bad'>冷却中，本地短路</b> 不触达上游","e-bad");
+    status('<span class="badge b-red">SHORT-CIRCUIT</span>本地返回缓存错误 · 耗时 ~9ms · 用户看到「模型假死」');
+    moveTo(nodes[0]);await sleep(RM?60:500);
+    say("client ← 本地错误返回 · ~9ms","e-bad");
+    pkt.style.opacity="0";await sleep(320);pkt.style.display="none";pkt.style.opacity="1";
+    busy=false;send.disabled=false;sendReal.disabled=false;
+    return;
+  }
+  shortcut.classList.remove("on");
+  say("cooldown-mgr → 空闲，放行");
+  // hop: normalizer (outbound pass)
+  moveTo(nodes[2]);flash(nodes[2]);await sleep(RM?60:480);
+  say("normalizer → 转发上游");
+  // hop: upstream
+  moveTo(nodes[3]);flash(nodes[3]);await sleep(RM?60:480);
+  var upMsg = realDenied ? "permission_denied（真实权限不足）" : 'permission_denied + "high demand"（实为容量受限）';
+  say("upstream → 返回 <b>"+upMsg+"</b>");
+  // back through normalizer
+  moveTo(nodes[2]);await sleep(RM?60:480);
+  var code;
+  if(mode==="before"){code=403;}
+  else{code = realDenied ? 403 : 429;}
+  if(code===403){
+    flash(nodes[2],"bad");
+    say("normalizer → 映射为 <b class='e-bad'>403 AUTH FAILURE</b>","e-bad");
+    moveTo(nodes[1]);await sleep(RM?60:480);
+    flash(nodes[1],"bad");
+    cooldown=true;cdsub.textContent="冷却 30min";cdbar.classList.add("on");
+    nodes[1].classList.add("cool");
+    say("cooldown-mgr → <b class='e-bad'>按鉴权失败处理：进入 30min 冷却</b>","e-bad");
+    moveTo(nodes[0]);await sleep(RM?60:500);
+    status('<span class="badge b-red">403</span>'+(realDenied?"真实权限错误 — 冷却处理正确":"误伤：容量受限被当鉴权失败 — 后续请求将本地短路 ~9ms"));
+    say("client ← 403 · "+(realDenied?"冷却正确触发":"错误进入冷却，模型「假死」"),"e-bad");
+  }else{
+    flash(nodes[2],"ok");
+    say("normalizer → 识别 \"high demand\"，映射为 <b class='e-ok'>429 TRANSIENT</b>","e-ok");
+    moveTo(nodes[1]);await sleep(RM?60:480);
+    flash(nodes[1],"ok");
+    say("cooldown-mgr → 429 不触发冷却，放行重试");
+    moveTo(nodes[0]);await sleep(RM?60:500);
+    status('<span class="badge b-olive">429</span>瞬时错误 — 自动重试 / 下一请求正常触达上游');
+    say("client ← 429 · 重试成功，服务不中断","e-ok");
+  }
+  pkt.style.opacity="0";await sleep(320);pkt.style.display="none";pkt.style.opacity="1";
+  busy=false;send.disabled=false;sendReal.disabled=false;
+}
+send.addEventListener("click",function(){fire(false);});
+sendReal.addEventListener("click",function(){fire(true);});
+say("pipeline ready · 模式：修复前","e-dim");
+})();
+</script>
+</body>
+</html>

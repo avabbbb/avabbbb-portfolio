@@ -1,0 +1,92 @@
+/* Shell-only styles: home about section + editor badge bits.
+   Header / footer / contact-stage / not-found live in index.css (Main-owned). */
+
+.home-about {
+  padding-block: clamp(72px, 10vw, 160px);
+  border-top: 1px solid var(--line);
+}
+
+.home-about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 96px);
+  margin-top: 40px;
+}
+
+.home-about-lede {
+  font-size: clamp(24px, 3vw, 40px);
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  margin: 0;
+}
+
+.home-about-lede .serif {
+  font-size: 1.06em;
+}
+
+.home-about-body {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.9;
+  max-width: 56ch;
+}
+
+.home-about-body p {
+  margin: 0 0 1.2em;
+}
+
+.home-about-links {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 460px;
+}
+
+.home-about-links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  min-height: 48px;
+  padding-block: 10px;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.home-about-links a span:last-child {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.home-about-links a:hover {
+  color: var(--accent);
+}
+
+/* Standalone focused pages (/about, /contact) reuse home sections;
+   .focused-page adds breathing room under the fixed-free header. */
+.focused-page {
+  padding-top: clamp(24px, 4vw, 56px);
+}
+
+/* Editor-mode badge inside header brand cluster */
+.site-brand .editor-indicator {
+  margin-left: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 900px) {
+  .home-about-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 28px;
+  }
+}

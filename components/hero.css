@@ -1,0 +1,734 @@
+/* ==========================================================================
+   Hero — the world of AVABBBB
+   Giant wordmark, the original mascot as the largest object, and exactly one
+   live artifact per identity. Quiet, composed, no autoplay anywhere.
+   Tokens consumed from index.css:
+     --paper --ink --muted --line --acid --gold --display --serif --mono --gutter
+   Shared primitives: .page-width .eyebrow .visually-hidden
+   ========================================================================== */
+
+.hero {
+  position: relative;
+  /* The sticky stage (100svh) pins for exactly `height - 100svh` of scroll.
+     160svh → ~60svh of pinned choreography: act 1 hands off to act 2, the head
+     lands centred, then the stage releases straight into Selected Work. */
+  height: 190svh;
+}
+
+/* ---------- top editorial strip ---------- */
+
+.hero-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: clamp(10px, 1.8vh, 20px);
+}
+.hero-top .eyebrow { color: var(--muted); }
+.hero-top-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font: 10px/1.6 var(--mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.hero-top-mark i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--acid);
+  border: 1px solid var(--ink);
+  display: block;
+}
+
+/* ---------- sticky stage ---------- */
+
+/* One viewport tall, pinned while .hero scrolls. Both acts live here. */
+.hero-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-top: clamp(14px, 2.4vh, 26px);
+}
+
+/* ---------- act 1 — the wordmark alone, dead centre ---------- */
+
+.hero-act--mark {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Giant wordmark — fills the act-1 screen, centred both axes. */
+.hero-wordmark {
+  position: relative;
+  margin: 0;
+  font-weight: 800;
+  font-size: clamp(88px, 16.5vw, 300px);
+  line-height: .9;
+  letter-spacing: -.055em;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--ink);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.hero-wordmark .wl { display: inline-block; will-change: transform; }
+/* The third glyph borrows the accent — the only mark-making allowed. */
+.hero-wordmark .wl-accent { color: var(--accent); }
+
+.hero-scroll-hint {
+  margin: 26px 0 0;
+  font: 11px/1 var(--mono);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-scroll-hint .arr, .hero-scroll-hint span { animation: hint-bob 1.6s ease-in-out infinite; }
+@keyframes hint-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* ---------- act 2 — the figure band, mascot centred ---------- */
+
+/* The band fills the stage; the mascot is centred inside it and rises into
+   view on scroll. Intro / artifact / identities are the ring around it. */
+.hero-figure {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+.hero-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  /* the ring overlays the whole stage but must not block the act-1 wordmark's
+     pointer interaction — clicks/hover pass through; children re-enable it */
+  pointer-events: none;
+}
+/* re-enable interaction on the ring's real controls */
+.hero-artifact-seat,
+.hero-identities { pointer-events: auto; }
+
+.hero-mascot {
+  /* centred in the band, dead middle — the head rises here on scroll. All
+     motion lives on `transform` (centring + scroll-rise + lean are composed
+     there), so `translate` stays unset and can't double-apply. */
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  width: clamp(300px, 30vw, 480px);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.hero-mascot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 24px 34px rgba(33, 60, 50, .16));
+}
+.hero-mascot::after {
+  /* soft ground shadow, keeps the figure planted */
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -7px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(33, 60, 50, .18), transparent 68%);
+  z-index: -1;
+}
+/* ---------- live eyes — sockets in the logo's own green, pupils move ------- */
+
+
+/* Sockets painted in #b8c87f — the exact eye green from logo.png — cover the
+   original eyes invisibly. Socket = the FULL green field (~25.5% of the logo),
+   so no dark outline ring shows; the big dark pupil (~60% of the socket) is
+   the only part that translates. */
+.hero-eye {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background: #b8c87f;
+  width: 25.5%;
+  height: 25.5%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+}
+/* pupil centres measured from logo.png: L(21.6%,32.2%) R(78.1%,37.7%) */
+.hero-eye--l { left: 21.6%; top: 32.2%; }
+.hero-eye--r { left: 78.1%; top: 37.7%; }
+
+.hero-pupil {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 60%;
+  height: 60%;
+  margin: -30% 0 0 -30%;
+  border-radius: 50%;
+  background: #1a1b1a;
+  transition: transform .12s cubic-bezier(.3,.7,.4,1);
+  will-change: transform;
+}
+/* catchlight so the big pupil reads alive, not a flat disc */
+.hero-pupil::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  left: 22%;
+  width: 24%;
+  height: 24%;
+  border-radius: 50%;
+  background: rgba(245,243,235,.85);
+}
+
+
+/* ---------- identity fragments — real asset scraps ORBITING the head --------
+   .hero-fragments is a zero-size anchor centred on the mascot; each fragment is
+   absolutely parked at that centre and the JS orbit loop writes
+   translate(x,y) scale(s) + z-index every frame — far arc drops behind the
+   head (scale 0.62, dim), near arc sweeps in front (scale ~1.07). */
+.hero-fragments {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  z-index: auto;
+  pointer-events: none;                 /* ring is inert; buttons re-enable */
+}
+.hero-fragment {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: auto;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  /* the button is just the hit target — always ≥44px so it stays clickable
+     even when the visual sticker is scaled small on the far arc */
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+  /* transform/z-index are owned by the orbit rAF — don't transition them */
+  will-change: transform;
+}
+.hero-fragment-face {
+  display: block;
+  position: relative;
+  width: 150px;                          /* real presence — a polaroid, not a dot */
+  padding: 9px 9px 0;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.7), transparent 60%),
+    #fff;
+  box-shadow: 4px 6px 0 rgba(33, 60, 50, .28);
+  transform-origin: center;
+  will-change: transform;
+}
+/* the photo scrap inside the white frame */
+.hero-fragment-media {
+  display: block;
+  border: 1px solid rgba(33,60,50,.18);
+  overflow: hidden;
+  background: var(--paper-deep);
+}
+.hero-fragment-media img { display: block; width: 100%; height: auto; object-fit: cover; }
+/* washi tape tab across the top edge */
+.hero-fragment-tape {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  translate: -50% 0;
+  width: 46px;
+  height: 15px;
+  background: rgba(214, 192, 108, .9);            /* gold washi */
+  border-left: 1px dashed rgba(0,0,0,.12);
+  border-right: 1px dashed rgba(0,0,0,.12);
+  rotate: -2deg;
+  box-shadow: 0 1px 2px rgba(33,60,50,.18);
+  z-index: 2;
+}
+.hero-fragment--opensource .hero-fragment-tape { background: rgba(184,200,127,.92); }  /* acid washi */
+.hero-fragment--creator .hero-fragment-tape    { background: rgba(224,160,140,.9);  }  /* coral washi */
+/* caption label under the photo — the identity name in tiny mono */
+.hero-fragment-tag {
+  display: block;
+  padding: 7px 4px 8px;
+  font: 700 10px/1 var(--mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-align: center;
+}
+.hero-fragment-code {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 76px;
+  padding: 8px;
+  font: 700 11px/1.35 var(--mono);
+  letter-spacing: .02em;
+  color: var(--ink);
+  background: var(--paper-deep);
+  white-space: nowrap;
+}
+.hero-fragment:hover .hero-fragment-face { box-shadow: 6px 9px 0 rgba(33,60,50,.22); }
+.hero-fragment.is-active .hero-fragment-face {
+  box-shadow: 0 0 0 2px var(--acid), 5px 7px 0 rgba(33,60,50,.3);
+}
+
+@media (max-width: 900px) {
+  .hero-fragment-face { width: 112px; padding: 7px 7px 0; }
+  .hero-fragment-tag { font-size: 8px; padding: 6px 2px 7px; }
+  .hero-fragment-code { height: 58px; font-size: 9px; }
+  .hero-fragment-tape { width: 36px; height: 12px; top: -7px; }
+}
+
+/* Intro — compact left block, upper area of the figure band, clear of the
+   identity selector docked at the bottom-left. */
+.hero-intro {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: clamp(8px, 4%, 40px);
+  max-width: 300px;
+}
+.hero-intro h1 {
+  margin: 0 0 14px;
+  font-size: clamp(22px, 1.9vw, 30px);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.22;
+}
+.hero-intro p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--muted);
+  max-width: 34ch;
+}
+.hero-intro .serif { font-size: 15px; color: var(--ink); }
+
+/* Artifact — one sticker stuck down with a tape tab. The Link carries the
+   .sticker white frame + tilt + hard shadow; .hero-artifact-card inside keeps
+   the printed "window" look; hover peels a coloured back over the card. */
+.hero-artifact-seat {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: 0;
+  width: clamp(300px, 25vw, 392px);
+}
+.hero-artifact {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-decoration: none;
+  color: var(--ink);
+  outline-offset: 6px;
+  --tilt: 1.6deg;               /* the artifact sticker leans slightly right */
+}
+.hero-artifact-inner { position: relative; }
+.hero-artifact-card {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  overflow: hidden;
+}
+/* the peel-back covers just the card face, not the caption row */
+.hero-artifact .peel-back {
+  top: 0; left: 0; right: 0;
+  bottom: auto;
+  height: calc(100% - 0px);
+}
+.hero-artifact-inner .peel-back {
+  /* cover the card only — caption stays visible underneath */
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--gold);
+  border: 1px solid var(--ink);
+  display: grid;
+  place-items: center;
+  font: 800 13px/1 var(--mono);
+  letter-spacing: .2em;
+  color: var(--ink);
+  clip-path: inset(0 0 0 100%);        /* parked off the right edge */
+  transition: clip-path .5s cubic-bezier(.7,0,.2,1);
+  pointer-events: none;
+}
+.hero-artifact:hover .peel-back,
+.hero-artifact:focus-visible .peel-back { clip-path: inset(0 0 0 0); }
+
+/* artifact window chrome — shared by the three identities so the swap reads
+   as content changing, not furniture moving */
+.hero-artifact-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding-inline: 13px;
+  border-bottom: 1px solid var(--ink);
+  font: 10px/1 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--paper-deep);
+}
+.hero-artifact-bar .dots { display: inline-flex; gap: 5px; }
+.hero-artifact-bar .dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+  display: block;
+}
+.hero-artifact-bar .dots i:first-child { background: var(--ink); }
+.hero-artifact-bar .bar-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hero-artifact-bar .bar-go { margin-left: auto; color: var(--ink); display: inline-flex; }
+
+.hero-artifact-media { display: block; width: 100%; }
+.hero-artifact-media img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* PRODUCT — the Flovart canvas fragment is presented as one live node on a
+   canvas field; the crop is real, the frame is honest about cropping. */
+.hero-artifact-canvas { position: relative; background: #eeece2; }
+.hero-artifact-canvas .node-label {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font: 9px/1.7 var(--mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--ink);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.hero-artifact-canvas img { aspect-ratio: 720 / 455; object-fit: cover; }
+
+/* OPEN SOURCE — the additive model-contract diff, rendered as a real code
+   card: existing swe-1-6 stays, swe-1-6-slow is the addition. */
+.hero-artifact-code {
+  background: var(--ink);
+  color: #d9e2da;
+  padding: 16px 18px 18px;
+  font: 11.5px/1.85 var(--mono);
+  letter-spacing: 0;
+}
+.hero-artifact-code .cl { display: block; white-space: pre; }
+.hero-artifact-code .cl-ctx { color: #9fb0a4; }
+.hero-artifact-code .cl-add {
+  color: var(--ink);
+  background: var(--acid);
+  margin-inline: -18px;
+  padding-inline: 18px;
+}
+.hero-artifact-code .cl-add::before { content: "+ "; }
+.hero-artifact-code .cl-ctx::before { content: "  "; }
+.hero-artifact-code .cl-file {
+  color: #7f948a;
+  padding-bottom: 8px;
+  font-size: 10px;
+  letter-spacing: .08em;
+}
+
+/* CREATOR — a single film frame, letterboxed like a frame pulled off the
+   timeline, with honest timecode furniture. */
+.hero-artifact-film { position: relative; background: #10160f; }
+.hero-artifact-film img { aspect-ratio: 16 / 9; object-fit: cover; opacity: .96; }
+.hero-artifact-film .tc {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  font: 9.5px/1.6 var(--mono);
+  letter-spacing: .1em;
+  color: var(--gold);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+}
+.hero-artifact-film .frame-mark {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font: 9.5px/1.6 var(--mono);
+  letter-spacing: .12em;
+  color: var(--paper);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+}
+
+/* caption row under every artifact — label + destination, real and readable */
+.hero-artifact-caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 10px;
+}
+.hero-artifact-caption .cap-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.hero-artifact-caption .cap-name .serif { font-weight: 400; font-size: 14px; }
+.hero-artifact-caption .cap-dest {
+  font: 10px/1.6 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hero-artifact:hover .cap-dest { color: var(--ink); }
+/* ---------- identity selector ---------- */
+
+/* Identity selector — docked to the lower-left of the figure band, clear of
+   the intro above it and the mascot feet to its right. */
+.hero-identities {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.hero-identity {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  text-align: left;
+}
+.hero-identity .id-index {
+  font: 10px/1 var(--mono);
+  letter-spacing: .1em;
+  color: var(--muted);
+  transition: color .2s;
+}
+.hero-identity .id-label {
+  font-size: clamp(15px, 1.25vw, 19px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  position: relative;
+}
+.hero-identity .id-zh {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.hero-identity[aria-pressed="true"] { color: var(--ink); }
+.hero-identity[aria-pressed="true"] .id-index { color: var(--ink); }
+.hero-identity[aria-pressed="true"] .id-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 6px;
+  background: var(--acid);
+  z-index: -1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero-identity:hover { color: var(--ink); }
+}
+
+/* ---------- bottom bar ---------- */
+
+.hero-bottom {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 64px;
+  margin-top: clamp(14px, 2.4vh, 26px);
+  border-top: 1px solid var(--line);
+}
+.hero-work-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font: 11px/1 var(--mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+}
+.hero-work-link .arr { transition: transform .25s; }
+.hero-work-link:hover .arr { transform: translateY(3px); }
+.hero-role-index {
+  display: flex;
+  gap: clamp(14px, 2vw, 30px);
+  font: 10px/1.7 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-role-index b { font-weight: 400; color: var(--ink); margin-right: 7px; }
+
+.hero-story-chapters { display: flex; gap: 18px; }
+.hero-story-chapters button { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0; border: 0; background: none; color: var(--muted); font: 11px/1.5 var(--mono); }
+.hero-story-chapters button[aria-current] { color: var(--ink); font-weight: 700; text-decoration: underline; text-underline-offset: 6px; }
+
+
+/* artifact swap — content change, not furniture move */
+.hero-artifact-inner { animation: hero-artifact-in .38s cubic-bezier(.2, .8, .25, 1) both; }
+@keyframes hero-artifact-in {
+  from { opacity: 0; transform: translateY(8px) scale(.985); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- tablet ---------- */
+
+@media (max-width: 1180px) {
+  .hero-intro { max-width: 250px; }
+  .hero-artifact-seat { width: clamp(270px, 27vw, 340px); }
+  .hero-mascot { width: clamp(270px, 32vw, 420px); }
+}
+
+@media (max-width: 1024px) {
+  .hero-intro { max-width: 230px; }
+  .hero-mascot { width: clamp(250px, 36vw, 350px); }
+  .hero-artifact-seat { width: clamp(230px, 30vw, 300px); }
+}
+
+/* ---------- mobile — authored composition, not a scale-down ---------- */
+
+@media (max-width: 900px) {
+  /* less scroll room on a short screen — one act handoff is enough */
+  .hero { height: 180svh; }
+  .hero-top { padding-bottom: 6px; }
+  .hero-top-mark { display: none; }
+
+  .hero-wordmark { font-size: clamp(58px, 19vw, 140px); }
+
+  /* act-2 ring becomes a normal column so nothing overlaps a small screen */
+  .hero-ring {
+    position: static;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .hero-intro {
+    position: static;
+    translate: none;
+    max-width: none;
+    padding: 4px 0 8px;
+    order: 0;
+  }
+  .hero-intro h1 { font-size: 20px; margin-bottom: 6px; }
+  .hero-intro p { max-width: 44ch; }
+
+  .hero-artifact-seat {
+    position: static;
+    width: min(280px, 80vw);
+    margin: 0 0 0 auto;
+    order: 2;
+  }
+  .hero-artifact-code { font-size: 10px; padding: 12px 14px 14px; }
+  .hero-artifact-code .cl-add { margin-inline: -14px; padding-inline: 14px; }
+  .hero-artifact-bar { height: 30px; padding-inline: 10px; }
+
+  .hero-identities {
+    position: static;
+    flex-direction: row;
+    width: 100%;
+    margin-top: auto;
+    border-top: 1px solid var(--line);
+    order: 3;
+  }
+  .hero-identity {
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    min-height: 56px;
+    padding: 8px 10px;
+    border-left: 1px solid var(--line);
+  }
+  .hero-identity:first-child { border-left: 0; padding-left: 0; }
+  .hero-identity .id-label { font-size: 12px; }
+  .hero-identity .id-zh { font-size: 10px; }
+  .hero-identity[aria-pressed="true"] .id-label::after { height: 5px; bottom: -2px; }
+
+  /* the head stays centred in the band, smaller so the ring fits around it */
+  .hero-mascot {
+    top: 46%;
+    width: 210px;
+  }
+
+  .hero-artifact-seat { position: absolute; top: 60%; right: 4px; width: min(220px, 61vw); }
+  .hero-artifact-caption .cap-dest { display: none; }
+  .hero-mascot { top: 36%; }
+  .hero-fragments { top: 36%; }
+  .hero-story-chapters { gap: 10px; }
+  .hero-story-chapters button { font-size: 10px; gap: 4px; }
+  .hero-bottom { flex-wrap: wrap; }
+
+  .hero-bottom { min-height: 58px; margin-top: 0; }
+  .hero-role-index { display: none; }
+}
+
+@media (max-width: 380px) {
+  .hero-mascot { width: 190px; }
+  .hero-artifact-seat { width: min(240px, 76vw); }
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  /* collapse the scroll room — show the final composed state, no choreography */
+  .hero { height: auto; }
+  .hero-stage { position: static; height: auto; }
+  .hero-act--mark { position: static; }
+  .hero-mascot,
+  .hero-act--mark,
+  .hero-ring { transform: none !important; opacity: 1 !important; }
+  .hero-artifact-inner { animation: none; }
+  .hero-artifact:hover .hero-artifact-card { transform: none; }
+  .hero-scroll-hint { display: none; }
+  .hero-figure { min-height: 680px; }
+  .hero-mascot { transform: translate(-50%, -50%) !important; }
+  @media (max-width: 900px) {
+    .hero-figure, .hero-ring { min-height: 820px; }
+  }
+}

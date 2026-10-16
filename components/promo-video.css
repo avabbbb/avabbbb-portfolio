@@ -1,0 +1,22 @@
+html { scrollbar-gutter: stable; }
+.promo-video { margin: 24px 0 32px; }
+.promo-video--compact { margin: 16px 0 0; }
+.promo-video-trigger { display: inline-flex; align-items: center; gap: 10px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; font-size: 13px; cursor: pointer; text-align: left; }
+.promo-video-play { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; border: 1px solid currentColor; border-radius: 50%; }
+.promo-video-trigger:hover .promo-video-play { background: #234335; color: white; border-color: #234335; }
+.promo-video-trigger--card { gap: 16px; padding: 12px; width: min(100%, 440px); border: 1px solid #23433530; border-radius: 8px; }
+.promo-video-trigger--card img { width: 112px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; }
+.promo-video-trigger small { display: block; margin-top: 5px; font-size: 11px; color: #405344; }
+.promo-video-dialog { width: min(880px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 32px); margin: auto; padding: 16px; border: 1px solid #ffffff24; border-radius: 12px; background: #171b18; color: #f7f5ee; box-shadow: 0 24px 100px #0006; overflow: auto; }
+.promo-video-dialog::backdrop { background: #101710b8; backdrop-filter: blur(6px); }
+body:has(.promo-video-dialog[open]) { overflow: hidden; }
+.promo-video-dialog-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.promo-video-dialog-head strong { font-size: 14px; }
+.promo-video-close { display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 50%; background: #ffffff12; color: inherit; cursor: pointer; }
+.promo-video-dialog video { display: block; width: 100%; max-height: calc(100dvh - 200px); aspect-ratio: 16 / 9; background: black; object-fit: contain; border-radius: 5px; }
+.promo-video-versions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.promo-video-versions button { font: inherit; font-size: 12px; padding: 8px 12px; border: 1px solid #ffffff28; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+.promo-video-versions button[aria-pressed="true"] { background: #e4edb3; color: #17271c; border-color: #e4edb3; }
+.promo-video-caption { margin: 12px 0 0; font-size: 11px; line-height: 1.6; color: #ffffff99; }
+.promo-video-trigger:focus-visible, .promo-video-dialog button:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+@media (max-width: 480px) { .promo-video-dialog { padding: 12px; } .promo-video-trigger--card { gap: 10px; } .promo-video-trigger--card img { width: 80px; } }

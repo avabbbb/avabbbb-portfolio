@@ -1,0 +1,816 @@
+/* ================================================================
+   Selected / works — four authored stages.
+   No uniform cards: each stage owns its own field, scale and object.
+   ================================================================ */
+
+.sw-section {
+  padding-block: clamp(56px, 7vw, 120px) 0;
+}
+
+/* ——— Editorial opening ——— */
+
+.sw-head {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: clamp(48px, 6vw, 96px);
+}
+
+.sw-head-eyebrow {
+  color: var(--muted);
+}
+
+.sw-heading {
+  margin: 0;
+  font-size: clamp(52px, 9.5vw, 148px);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.sw-heading .serif {
+  font-weight: 400;
+}
+
+/* ——— Shared stage atoms ——— */
+
+.sw-stage {
+  position: relative;
+  padding-block: clamp(56px, 7.5vw, 128px);
+}
+
+.sw-mark {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding-inline: var(--gutter);
+  max-width: 1584px;
+  margin-inline: auto;
+  margin-bottom: clamp(28px, 3.5vw, 56px);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 1600px) {
+  .sw-mark { max-width: 1760px; }
+}
+
+.sw-mark-num {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sw-mark-label {
+  color: var(--muted);
+}
+
+.sw-mark--dark .sw-mark-label {
+  color: #9db3a8;
+}
+
+.sw-caption {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+.sw-caption--dark {
+  color: #4d5a51;
+}
+
+.sw-case-link {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+.sw-case-link--dark {
+  color: var(--paper);
+}
+
+/* Meta row shared by stages */
+.sw-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 44px;
+  margin: 26px 0 0;
+  padding: 0;
+}
+
+.sw-meta div {
+  min-width: 0;
+}
+
+.sw-meta dt {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.sw-meta dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ================================================================
+   01 — Flovart · pale sage field, huge word + single real canvas
+   ================================================================ */
+
+.sw-stage--flovart {
+  background: linear-gradient(180deg, #e3e9cd 0%, #dde4c6 55%, var(--acid) 100%);
+  padding-bottom: clamp(64px, 8vw, 140px);
+}
+
+.sw-flovart-grid {
+  max-width: 1584px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 4vw, 72px);
+  align-items: end;
+}
+
+@media (min-width: 1600px) {
+  .sw-flovart-grid { max-width: 1760px; }
+}
+
+.sw-flovart-copy {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: clamp(8px, 2vw, 40px);
+}
+
+.sw-flovart-word {
+  margin: 0;
+  font-size: clamp(64px, 8.6vw, 164px);
+  font-weight: 800;
+  letter-spacing: -0.075em;
+  line-height: 0.9;
+  color: var(--ink);
+}
+
+.sw-flovart-sub {
+  margin: 18px 0 0;
+  font-size: clamp(14px, 1.4vw, 19px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sw-flovart-desc {
+  margin: 16px 0 0;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: #3d4d43;
+  max-width: 44ch;
+}
+
+.sw-flovart-fig {
+  margin: 0;
+  min-width: 0;
+}
+
+.sw-flovart-frame {
+  display: block;
+  text-decoration: none;
+  border: 1px solid #b8c19a;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 34px 70px -28px rgba(33, 60, 50, 0.45);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.sw-flovart-frame:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 44px 84px -28px rgba(33, 60, 50, 0.55);
+}
+
+.sw-flovart-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ================================================================
+   02 — CLIProxyAPI · deep green field, designed diff
+   ================================================================ */
+
+.sw-stage--cpa {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.sw-cpa-grid {
+  max-width: 1584px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  gap: clamp(40px, 5vw, 96px);
+  align-items: center;
+}
+
+@media (min-width: 1600px) {
+  .sw-cpa-grid { max-width: 1760px; }
+}
+
+.sw-cpa-line {
+  margin: 0;
+  font-size: clamp(38px, 4.6vw, 76px);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1.04;
+}
+
+.sw-cpa-line .serif {
+  color: var(--acid);
+}
+
+.sw-cpa-desc {
+  margin: 26px 0 0;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: #c3cfc7;
+  max-width: 52ch;
+}
+
+.sw-cpa-title-tag {
+  margin: 30px 0 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.sw-cpa-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.sw-cpa-evidence li {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid #3d5a4c;
+  border-radius: 999px;
+  padding: 7px 14px;
+  color: #d5ded8;
+}
+
+.sw-cpa-diff-col {
+  min-width: 0;
+}
+
+.sw-diff {
+  margin: 0;
+  border: 1px solid #355144;
+  border-radius: 8px;
+  background: #182b23;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.55);
+}
+
+.sw-diff-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border-bottom: 1px solid #2a4136;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: #8fa79a;
+}
+
+.sw-diff-dots {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.sw-diff-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #355144;
+}
+
+.sw-diff-bar em {
+  font-style: normal;
+}
+
+.sw-diff-pr {
+  margin-left: auto;
+  color: var(--acid);
+}
+
+.sw-diff-body {
+  margin: 0;
+  padding: 20px 22px 24px;
+  font-family: var(--mono);
+  font-size: clamp(12px, 1.5vw, 15.5px);
+  line-height: 2;
+  color: #cfdad2;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* additive line tint — applied via code content, not per-line spans */
+.sw-diff-body {
+  background:
+    linear-gradient(90deg, transparent 0, transparent 0);
+}
+
+.sw-cpa-proof {
+  margin: 22px 0 0;
+  padding: 16px 18px;
+  border-left: 2px solid var(--gold);
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: #b9c8bf;
+  max-width: 56ch;
+}
+
+.sw-cpa-proof-tag {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+/* ================================================================
+   03 — OfferU · paper dossier object on paper
+   ================================================================ */
+
+.sw-stage--offeru {
+  background: var(--paper-deep);
+}
+
+.sw-offeru-grid {
+  max-width: 1584px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: clamp(36px, 5vw, 88px);
+  align-items: center;
+}
+
+@media (min-width: 1600px) {
+  .sw-offeru-grid { max-width: 1760px; }
+}
+
+.sw-offeru-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.sw-offeru-title {
+  margin: 0;
+  font-size: clamp(58px, 7vw, 124px);
+  line-height: 0.95;
+}
+
+.sw-offeru-sub {
+  margin: 20px 0 0;
+  font-size: clamp(13px, 1.3vw, 17px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.sw-offeru-desc {
+  margin: 16px 0 0;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--muted);
+  max-width: 40ch;
+}
+
+/* The dossier: one dominant rotated sheet + real screenshot inset */
+.sw-dossier {
+  position: relative;
+  margin: 0;
+  padding: clamp(8px, 2vw, 28px) 0 clamp(30px, 3vw, 48px);
+}
+
+.sw-dossier-sheet {
+  position: relative;
+  /* rotation now lives on the .sticker wrapper (--tilt); the sheet stays flat
+     inside so the whole paper piece tilts as one sticker, not a sheet on a sheet */
+  background: #fbfaf5;
+  border: 1px solid #213c32;
+  box-shadow: none;
+  padding: clamp(22px, 3vw, 42px) clamp(18px, 2.6vw, 40px) clamp(30px, 3vw, 46px);
+}
+
+.sw-dossier:hover .sw-dossier-sheet {
+  transform: none;
+}
+
+.sw-dossier-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  border-bottom: 1px solid #d8d4c4;
+  padding-bottom: 14px;
+  margin-bottom: clamp(20px, 2.4vw, 34px);
+}
+
+.sw-dossier-kicker {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.sw-dossier-stamp {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8a6d2f;
+  border: 1px solid #cdbf8e;
+  padding: 4px 10px;
+  transform: rotate(2deg);
+  white-space: nowrap;
+}
+
+.sw-dossier-big {
+  margin: 0 0 clamp(22px, 2.6vw, 36px);
+  font-size: clamp(30px, 3.6vw, 54px);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.sw-dossier-big .serif {
+  letter-spacing: -0.03em;
+}
+
+.sw-dossier-flow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 32px;
+  border-top: 1px dashed #cfcaba;
+}
+
+.sw-dossier-flow li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px dashed #cfcaba;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.sw-dossier-index {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.sw-dossier-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b6450;
+}
+
+/* Real README capture pinned to the sheet's lower-right corner */
+.sw-dossier-inset {
+  position: absolute;
+  right: clamp(0px, 1vw, 20px);
+  bottom: 0;
+  width: min(44%, 340px);
+  transform: rotate(1.4deg);
+  background: #fff;
+  border: 1px solid #d0ccbc;
+  padding: 8px 8px 26px;
+  box-shadow: 0 18px 36px -14px rgba(60, 58, 44, 0.4);
+}
+
+.sw-dossier-inset img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #e4e0d0;
+}
+
+.sw-dossier-inset-tag {
+  position: absolute;
+  left: 10px;
+  bottom: 6px;
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b6450;
+}
+
+/* ================================================================
+   04 — Creator · cinematic black stage, user-initiated film
+   ================================================================ */
+
+.sw-stage--creator {
+  background: #101410;
+  color: var(--paper);
+}
+
+.sw-creator-grid {
+  max-width: 1584px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(40px, 5vw, 96px);
+  align-items: center;
+}
+
+@media (min-width: 1600px) {
+  .sw-creator-grid { max-width: 1760px; }
+}
+
+.sw-creator-line {
+  margin: 0;
+  font-size: clamp(38px, 4.6vw, 76px);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1.04;
+}
+
+.sw-creator-line .serif {
+  color: var(--gold);
+}
+
+.sw-creator-desc {
+  margin: 24px 0 0;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: #b6c2b6;
+  max-width: 46ch;
+}
+
+.sw-creator-links {
+  list-style: none;
+  margin: 30px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 320px;
+}
+
+.sw-creator-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding-block: 8px;
+  border-bottom: 1px solid #33402f;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--paper);
+  transition: padding-left 0.25s ease;
+}
+
+.sw-creator-link:hover {
+  padding-left: 8px;
+  color: var(--acid);
+}
+
+/* Restrained LORA strip — single small real sample */
+.sw-lora-strip {
+  margin: 30px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sw-lora-strip img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #33402f;
+  filter: saturate(0.85);
+}
+
+.sw-lora-strip figcaption {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7d8b7d;
+  max-width: 18ch;
+  line-height: 1.7;
+}
+
+/* Film frame: 4:3 still + user-initiated video */
+.sw-film {
+  margin: 0;
+  min-width: 0;
+}
+
+.sw-film-frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border: 1px solid #2c362a;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.8);
+}
+
+.sw-film-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sw-film-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  /* hidden until user starts playback — the still covers it */
+  opacity: 0;
+}
+
+.sw-film-video.is-live {
+  opacity: 1;
+}
+
+.sw-film-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(10, 14, 10, 0.28);
+  border: 0;
+  color: var(--paper);
+  min-height: 44px;
+  transition: background 0.3s ease;
+}
+
+.sw-film-play:hover {
+  background: rgba(10, 14, 10, 0.45);
+}
+
+.sw-film-play-disc {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 243, 235, 0.7);
+  background: rgba(16, 20, 16, 0.6);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  color: var(--acid);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.sw-film-play:hover .sw-film-play-disc {
+  transform: scale(1.07);
+  background: var(--ink);
+}
+
+.sw-film-play-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ——— Closing archive link ——— */
+
+.sw-foot {
+  padding-block: clamp(48px, 5vw, 84px);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sw-archive-link {
+  min-width: min(320px, 100%);
+}
+
+/* ================================================================
+   Mobile — authored order: title → object → caption/link
+   ================================================================ */
+
+@media (max-width: 900px) {
+  .sw-stage {
+    padding-block: clamp(48px, 10vw, 72px);
+  }
+
+  .sw-flovart-grid,
+  .sw-cpa-grid,
+  .sw-offeru-grid,
+  .sw-creator-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* Order: copy (title) → object → caption/link stays inside figure */
+  .sw-flovart-copy { order: 0; padding-bottom: 0; }
+  .sw-flovart-fig  { order: 1; }
+  .sw-cpa-copy     { order: 0; }
+  .sw-cpa-diff-col { order: 1; }
+  .sw-offeru-copy  { order: 0; }
+  .sw-dossier      { order: 1; }
+  .sw-creator-copy { order: 0; }
+  .sw-film         { order: 1; }
+
+  .sw-flovart-word {
+    font-size: clamp(56px, 17vw, 96px);
+  }
+
+  /* Diff: inner horizontal scroller, never page overflow */
+  .sw-diff-body {
+    font-size: 12.5px;
+    line-height: 1.9;
+    padding: 16px 18px 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sw-dossier-sheet {
+    transform: rotate(-1.1deg);
+    max-width: none;
+  }
+
+  .sw-dossier-inset {
+    width: min(52%, 260px);
+    right: 4px;
+  }
+
+  .sw-dossier-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .sw-foot {
+    justify-content: stretch;
+  }
+
+  .sw-archive-link {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+/* ================================================================
+   Reduced motion — no entrance tricks anywhere; kill the small
+   hover translations too.
+   ================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .sw-flovart-frame,
+  .sw-dossier-sheet,
+  .sw-film-play-disc,
+  .sw-creator-link {
+    transition: none;
+  }
+
+  .sw-flovart-frame:hover { transform: none; }
+  .sw-dossier:hover .sw-dossier-sheet { transform: rotate(-1.6deg); }
+  .sw-film-play:hover .sw-film-play-disc { transform: none; }
+  .sw-creator-link:hover { padding-left: 0; }
+}

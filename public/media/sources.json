@@ -1,0 +1,61 @@
+{
+  "purpose": "Authentic portfolio media provenance; no generated product evidence.",
+  "assets": {
+    "flovart-workflow.webp": {
+      "source": "../flovart-ui.png",
+      "treatment": "Full original screenshot, WebP encoding only",
+      "dimensions": [
+        1869,
+        890
+      ]
+    },
+    "flovart-fragment.webp": {
+      "source": "../flovart-ui.png",
+      "treatment": "Canvas detail crop; not a reconstructed interface",
+      "crop": {
+        "left": 515,
+        "top": 220,
+        "width": 720,
+        "height": 455
+      }
+    },
+    "flovart-live.webp": {
+      "source": "https://raw.githubusercontent.com/avabbbb/Flovart/main/pic/readme/agent-operations-final-state.png",
+      "treatment": "Full original recording final-state screenshot, WebP encoding only"
+    },
+    "flovart-live.mp4": {
+      "source": "https://raw.githubusercontent.com/avabbbb/Flovart/main/pic/readme/agent-operations-live-workflow.mp4",
+      "treatment": "Unmodified recorded CLI workflow demo; no paid model calls",
+      "recordingNotes": "https://github.com/avabbbb/Flovart/blob/main/docs/maintenance/readme/DEMO_RECORDING.md"
+    },
+    "offeru-today.webp": {
+      "source": "https://raw.githubusercontent.com/avabbbb/OfferU/main/asset/screenshots/01-today-workbench.png",
+      "treatment": "Official README product capture, WebP encoding only; demo content is not real user outcome evidence"
+    },
+    "offeru-resume.webp": {
+      "source": "https://raw.githubusercontent.com/avabbbb/OfferU/main/asset/screenshots/08-resume-optimize.png",
+      "treatment": "Official README product capture, WebP encoding only; demo content is not real user outcome evidence"
+    },
+    "creator-film.webp": {
+      "source": "../videos/cicia.mp4",
+      "timestampSeconds": 6.656334,
+      "treatment": "Full 4:3 original frame; resized to 1280px width and WebP encoded",
+      "projectId": "v3"
+    },
+    "flovart-frames": {
+      "source": "flovart-live.mp4",
+      "treatment": "Sampled from the tracked real CLI workflow recording; no generated or reconstructed interface frames",
+      "frameCountPerVariant": 48,
+      "sampleRate": "16/3 fps",
+      "desktopDimensions": [
+        896,
+        560
+      ],
+      "mobileDimensions": [
+        640,
+        400
+      ],
+      "generator": "node scripts/build-flovart-frames.mjs"
+    }
+  }
+}
